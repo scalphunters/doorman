@@ -15,7 +15,7 @@ from doorman.datastore import MongoDataStore
 
 app = Flask(__name__)
 app.debug = True
-CORS(app)
+# CORS(app)
 
 ### Authentication & Authorization module (Mongodb host is )
 auth = Auth(app,MongoDataStore(host='localhost',port=27017,db='fip'),tablename='users',jwt_expiration_delta=3600)
