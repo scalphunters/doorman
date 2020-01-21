@@ -11,7 +11,7 @@
 
 from flask import Flask , request, Response
 from flask_jwt import JWT,jwt_required,current_identity
-
+from flask_cors import CORS
 
 # from flask_restful import Resource, Api
 
@@ -78,7 +78,7 @@ class Auth(object):
 
         self.dbInstance=datastore
         self.app=app 
-
+        CORS(self.app)
         ### initialize admin
         self.checkAdminExists()
         ### JWT initialize
