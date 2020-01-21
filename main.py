@@ -1,6 +1,7 @@
 from flask import Flask , request, Response
 from flask_jwt import JWT,jwt_required,current_identity
 from flask_restful import Resource, Api
+from flask_cors import CORS
 
 from werkzeug.security import safe_str_cmp
 from hashlib import sha256
@@ -14,7 +15,8 @@ from doorman.datastore import MongoDataStore
 
 app = Flask(__name__)
 app.debug = True
- 
+CORS(app)
+
 ### Authentication & Authorization module (Mongodb host is )
 auth = Auth(app,MongoDataStore(host='localhost',port=27017,db='fip'),tablename='users',jwt_expiration_delta=3600)
 
@@ -26,7 +28,6 @@ auth = Auth(app,MongoDataStore(host='localhost',port=27017,db='fip'),tablename='
 
 
 # @app.route('/')
-# @auth.admin_required
 # def public():
 #     return "Hello world"
 

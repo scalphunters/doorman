@@ -11,6 +11,8 @@
 
 from flask import Flask , request, Response
 from flask_jwt import JWT,jwt_required,current_identity
+
+
 # from flask_restful import Resource, Api
 
 from werkzeug.security import safe_str_cmp
@@ -20,6 +22,7 @@ from functools import wraps
 from enum import IntEnum
 import json
 import uuid
+
 
 from .datastore import DataStore
 from . import utils
@@ -157,7 +160,13 @@ class Auth(object):
     ### JWT functions
 
     def authenticate(self,username, password): #### This is internal authentication function
-        user=User(self.dbInstance.find_one(self.tablename,{"username":username}))
+        print(username,password)
+        user = None
+        obj=self.dbInstance.find_one(self.tablename,{"username":username})
+        if obj is not None:
+            user=User(obj)
+        else:
+            return None
         if user and safe_str_cmp(user.password, self.hashPassword(password)):
             return user
 
