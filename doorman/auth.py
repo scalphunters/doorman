@@ -59,7 +59,7 @@ class User(object):
         out={
             "_id" : str(self._id),
             "username" : self.username,
-            "password" : self.password,
+            #"password" : self.password,
             "user_level" : self.user_level,
             "user_group" : self.user_group
         }
@@ -117,40 +117,57 @@ class Auth(object):
 
     def registerAuthUri(self):
 
+        @self.app.route('/auth/whoAmI',methods=["GET"])
+        @jwt_required()
+        def _whoAmI():
+            res=Response(str(current_identity), 200)
+            res.headers['Content-Type']='application/json'
+            return res
+
         @self.app.route('/auth/registerUser',methods=["POST"])
         @self.admin_required
         def _registerUser():
             req=request.get_json()
             status_code , res=self.registerUser(req)
-            return Response(res,status=status_code)
+            res=Response(res,status=status_code)
+            res.headers['Content-Type']='application/json'
+            return res
 
         @self.app.route('/auth/resetPassword',methods=["POST"])
         @self.admin_required
         def _resetPassword():
             req=request.get_json()
             status_code , res =self.resetPassword(req)
-            return Response(res,status=status_code)
+            res=Response(res,status=status_code)
+            res.headers['Content-Type']='application/json'
+            return res
 
         @self.app.route('/auth/changePassword',methods=["POST"])
         @jwt_required()
         def _changePassword():
             req=request.get_json()
             status_code, res =self.changePassword(req)
-            return Response(res,status=status_code)
+            res=Response(res,status=status_code)
+            res.headers['Content-Type']='application/json'
+            return res
 
         @self.app.route('/auth/changeUserLevel',methods=["POST"])
         @self.admin_required
         def _changeUserLevel():
             req=request.get_json()
             status_code, res =self.changeUserLevel(req)
-            return Response(res,status=status_code)
+            res=Response(res,status=status_code)
+            res.headers['Content-Type']='application/json'
+            return res
 
         @self.app.route('/auth/removeUser',methods=["POST"])
         @self.admin_required
         def _removeUser():
             req=request.get_json()
             status_code, res =self.removeUser(req)
-            return Response(res,status=status_code)
+            res=Response(res,status=status_code)
+            res.headers['Content-Type']='application/json'
+            return res
 
     ### utility function
     def hashPassword(self,s):
