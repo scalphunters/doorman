@@ -51,8 +51,13 @@ class DataStore(object):
     def set_field_unique(self,table,field_name,**kwargs):
         pass
     #### CRUD interfaces ### 
-    def find(self,table,query,doc,**kwargs):
+    def find(self,table,query,opt,**kwargs):
         pass 
+    def distinct(self,table,field,query,**kwargs):
+        pass 
+    def count(self,table,query,**kwargs):
+        pass
+
     def insert(self,table,doc,**kwargs):
         pass
     def update(self,table,query,doc,**kwargs):
@@ -61,7 +66,7 @@ class DataStore(object):
         pass
     def remove(self,table,query,**kwargs):
         pass
-    def find_one(self,table,query,**kwargs):
+    def find_one(self,table,query,opt,**kwargs):
         pass 
     def insert_one(self,table,doc,**kwargs):
         pass
@@ -90,23 +95,27 @@ class MongoDataStore(DataStore):
         return self.connection[coll].create_index(field_name,unique=True)
 
     #### CRUD interfaces ### - implementation
-    def find(self,coll,query,**kwargs):
-        return self.connection[coll].find(query,**kwargs)
+    def find(self,coll,query,opt=None,**kwargs):
+        return self.connection[coll].find(query,opt,**kwargs)
+    def count(self,coll,query,opt=None,**kwargs):
+        return self.connection[coll].find(query,opt,**kwargs).count()
+    def distinct(self,coll,field,query=None,**kwargs):
+        return self.connection[coll].distinct(field,query,**kwargs)
     def insert(self,coll,docs,**kwargs):
-        return self.connection[coll].insert_many(doc,**kwargs)
+        return self.connection[coll].insert_many(docs,**kwargs)
     def update(self,coll,query,modification,**kwargs):
         return self.connection[coll].update_many(query,modification,**kwargs)
     def replace(self,coll,query,doc,**kwargs):
         return self.connection[coll].replace_many(query,doc,**kwargs)
     def remove(self,coll,query,**kwargs):
         return self.connection[coll].delete_many(query,**kwargs)
-    def find_one(self,coll,query,**kwargs):
-        return self.connection[coll].find_one(query,**kwargs)
+    def find_one(self,coll,query,opt=None,**kwargs):
+        return self.connection[coll].find_one(query,opt,**kwargs)
     def insert_one(self,coll,doc,**kwargs):
         return self.connection[coll].insert_one(doc,**kwargs)
     def update_one(self,coll,query,modification,**kwargs):
         return self.connection[coll].update_one(query,modification,**kwargs)
-    def replace_one(self,coll,query,doc,**kwargs):
-        return self.connection[coll].replace_one(query,doc,**kwargs)
+    def replace_one(self,coll,query,doc,upsert=True,**kwargs):
+        return self.connection[coll].replace_one(query,doc,upsert,**kwargs)
     def remove_one(self,coll,query,**kwargs):
         return self.connection[coll].delete_one(query,**kwargs).deleted_count
