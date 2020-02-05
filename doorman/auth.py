@@ -75,7 +75,9 @@ class Auth(object):
         self.jwt_expiration_delta=3600
         if "jwt_expiration_delta" in kwargs:
             self.jwt_expiration_delta=kwargs["jwt_expiration_delta"]
-
+        self.appKey=None
+        if "app_key" in kwargs:
+            self.appKey=kwargs['app_key']
         self.dbInstance=datastore
         self.app=app 
         CORS(self.app)
@@ -117,6 +119,12 @@ class Auth(object):
 
     def registerAuthUri(self):
 
+        @self.app.route('/auth/checkAppKey/<k>',methods=["GET"])
+        def _checkAppKey(k):
+            flag= str(self.appKey)==str(k)
+            res=Response(json.dumps({"result":flag,"app_key":self.appKey}),status=200)
+            res.headers['Content-Type']='application/json'
+            return res
         @self.app.route('/auth/whoAmI',methods=["GET"])
         @jwt_required()
         def _whoAmI():
